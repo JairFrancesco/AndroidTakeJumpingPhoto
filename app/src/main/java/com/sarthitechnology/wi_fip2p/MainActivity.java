@@ -2,7 +2,10 @@ package com.sarthitechnology.wi_fip2p;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.hardware.Camera;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
@@ -14,6 +17,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -33,9 +39,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.ContentValues.TAG;
+
 public class MainActivity extends AppCompatActivity {
 
-    Button btnOnOff, btnDiscover, btnSend;
+    Button btnOnOff, btnDiscover, btnSend, btnCamera;
     ListView listView;
     TextView read_msg_box, connectionStatus;
     EditText writeMsg;
@@ -157,12 +165,23 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        btnCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+                //intent.putExtra(EXTRA_MESSAGE, message);
+                startActivity(intent);
+            }
+        });
     }
 
     private void initialWork() {
         btnOnOff=(Button) findViewById(R.id.onOff);
         btnDiscover=(Button) findViewById(R.id.discover);
         btnSend=(Button) findViewById(R.id.sendButton);
+        btnCamera=(Button) findViewById(R.id.camera);
+
         listView=(ListView) findViewById(R.id.peerListView);
         read_msg_box=(TextView) findViewById(R.id.readMsg);
         connectionStatus=(TextView) findViewById(R.id.connectionStatus);
@@ -469,4 +488,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 }
+
