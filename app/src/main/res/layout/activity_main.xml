@@ -13,7 +13,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="28dp"
-        android:layout_marginTop="55dp"
+        android:layout_marginTop="25dp"
         android:text="Wifi On" />
 
     <Button
@@ -40,17 +40,17 @@
         android:layout_height="150dp"
         android:layout_below="@+id/onOff"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="25dp"
-        android:background="@android:color/holo_orange_light" />
+        android:layout_marginTop="10dp"
+        android:background="#11F02E" />
 
     <TextView
         android:id="@+id/readMsg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
         android:layout_below="@+id/peerListView"
-        android:layout_marginTop="31dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
         android:text="Message"
         android:textAlignment="center"
         android:textSize="20sp"
@@ -92,6 +92,7 @@
         android:layout_below="@+id/sensorDataGravityLabel"
         android:text="X,Y,Z " />
 
+    <!--
     <TextView
         android:id="@+id/arelative"
         android:layout_width="wrap_content"
@@ -100,6 +101,7 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/sensorDataGravity"
         android:text="a_relative:" />
+        -->
 
     <TextView
         android:id="@+id/acceleration_magnitude"
@@ -107,7 +109,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/arelative"
+        android:layout_below="@+id/sensorDataGravity"
         android:text="acceleration magnitude:" />
 
     <TextView
@@ -152,7 +154,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="5dp"
         android:text="Connection Status"
         android:textAlignment="center"
         android:textColor="@android:color/holo_blue_dark"

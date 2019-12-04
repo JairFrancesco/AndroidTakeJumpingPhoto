@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     //variables para calcular t_highest
     float[][] a_measured;
     float[][] a_relative;
-    float[][] a_gravity;
+    float[][] a_gravity; //Vector gravedad: Indica la dirección y magnitud de la gravedad, obtenido del sensor de gravedad
     static final float g = 9.81f; //constant;
     float[][] a_vertical;
 
@@ -103,7 +103,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 case MESSAGE_READ:
                     byte[] readBuff= (byte[]) msg.obj;
                     String tempMsg=new String(readBuff,0,msg.arg1);
-                    read_msg_box.setText(tempMsg);
+
+                    if (tempMsg == "picture") { //take picture
+                        Toast.makeText(getApplicationContext(),"Foto tomada",Toast.LENGTH_SHORT).show();
+                    } else {
+                        read_msg_box.setText(tempMsg);
+                    }
+
                     break;
             }
             return true;
@@ -315,15 +321,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             time_highest.setText("t_highest" + String.valueOf(t_highest));
             //Time of the highest point
 
-        }
+            //send message to other device to take the picture
 
-        /*
-        float a_relative, a_measured;
-        float a_gravity; //Vector gravedad: Indica la dirección y magnitud de la gravedad, obtenido del sensor de gravedad
-        float v0 = 0.0f; //velocidad vertical
-        float g = 9.81f; //m/s^2 : constante de gravedad
-        float t_highest = v0/g;
-        */
+            String msg = "picture";
+            byte[] bytes =msg.getBytes();
+            btnSend.setVisibility(View.INVISIBLE);
+            String userType = connectionStatus.getText().toString();
+            if(userType.equals("Host")) {
+                //serverClass.writeData(bytes);
+                //return;
+            } else {
+                clientClass.writeData(bytes);
+            }
+
+        }
     }
 
     @Override
@@ -345,7 +356,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sensorData = (TextView) findViewById(R.id.sensorData);
         sensorDataGravity = (TextView) findViewById(R.id.sensorDataGravity);
 
-        arelative = (TextView) findViewById(R.id.arelative);
+        //arelative = (TextView) findViewById(R.id.arelative);
         acceleration_magnitude = (TextView) findViewById(R.id.acceleration_magnitude);
         acceleration_vertical = (TextView) findViewById(R.id.acceleration_vertical);
         time_highest = (TextView) findViewById(R.id.time_highest);
@@ -393,7 +404,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         if(peers.size()==0)
         {
-            Toast.makeText(getApplicationContext(),"No Device Found",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),"Ningún dispositivo encontrado",Toast.LENGTH_SHORT).show();
             return;
         }
         }

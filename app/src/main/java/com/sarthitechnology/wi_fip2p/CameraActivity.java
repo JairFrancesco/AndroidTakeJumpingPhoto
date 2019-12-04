@@ -13,6 +13,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,6 +37,7 @@ public class CameraActivity extends AppCompatActivity {
             File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
             if (pictureFile == null) {
                 Log.d(TAG, "Error creating media file, check storage permissions");
+                Toast.makeText(getApplicationContext(),"Error creando el archivo de medios, verifique los permisos de almacenamiento",Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -43,10 +45,13 @@ public class CameraActivity extends AppCompatActivity {
                 FileOutputStream fos = new FileOutputStream(pictureFile);
                 fos.write(data);
                 fos.close();
+                Toast.makeText(getApplicationContext(),"Foto tomada",Toast.LENGTH_SHORT).show();
             } catch (FileNotFoundException e) {
                 Log.d(TAG, "File not found: " + e.getMessage());
+                Toast.makeText(getApplicationContext(),"Archivo no encontrado",Toast.LENGTH_SHORT).show();
             } catch (IOException e) {
                 Log.d(TAG, "Error accessing file: " + e.getMessage());
+                Toast.makeText(getApplicationContext(),"Error accediendo al archivo",Toast.LENGTH_SHORT).show();
             }
         }
     };
@@ -76,6 +81,8 @@ public class CameraActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        mCamera.setDisplayOrientation(90);
     }
 
     @Override
@@ -106,7 +113,7 @@ public class CameraActivity extends AppCompatActivity {
         // using Environment.getExternalStorageState() before doing this.
 
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "MyCameraApp");
+                Environment.DIRECTORY_PICTURES), "P2P Jump Photo");
         // This location works best if you want the created images to be shared
         // between applications and persist after your app has been uninstalled.
 
