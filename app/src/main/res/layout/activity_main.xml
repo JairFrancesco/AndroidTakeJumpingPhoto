@@ -37,9 +37,9 @@
     <ListView
         android:id="@+id/peerListView"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_alignParentStart="true"
+        android:layout_height="150dp"
         android:layout_below="@+id/onOff"
+        android:layout_alignParentStart="true"
         android:layout_marginTop="25dp"
         android:background="@android:color/holo_orange_light" />
 
@@ -55,6 +55,78 @@
         android:textAlignment="center"
         android:textSize="20sp"
         android:textStyle="italic" />
+
+    <TextView
+        android:id="@+id/sensorDataLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/readMsg"
+        android:text="Sensor DATA ACCELEROMETER: " />
+
+    <TextView
+        android:id="@+id/sensorData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/sensorDataLabel"
+        android:text="X,Y,Z " />
+
+    <TextView
+        android:id="@+id/sensorDataGravityLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/sensorData"
+        android:text="Sensor DATA GRAVITY: " />
+
+    <TextView
+        android:id="@+id/sensorDataGravity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/sensorDataGravityLabel"
+        android:text="X,Y,Z " />
+
+    <TextView
+        android:id="@+id/arelative"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/sensorDataGravity"
+        android:text="a_relative:" />
+
+    <TextView
+        android:id="@+id/acceleration_magnitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/arelative"
+        android:text="acceleration magnitude:" />
+
+    <TextView
+        android:id="@+id/acceleration_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/acceleration_magnitude"
+        android:text="acceleration vertical:" />
+
+    <TextView
+        android:id="@+id/time_highest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/acceleration_vertical"
+        android:text="t_highest:" />
 
     <EditText
         android:id="@+id/writeMsg"
@@ -86,6 +158,9 @@
         android:textColor="@android:color/holo_blue_dark"
         android:textSize="18sp"
         android:textStyle="italic" />
+
+
+
     <!--
     <ImageView
         android:id="@+id/imageView"

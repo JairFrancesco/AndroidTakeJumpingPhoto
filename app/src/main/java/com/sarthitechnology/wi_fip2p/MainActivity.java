@@ -6,6 +6,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
@@ -40,12 +44,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
+import java.lang.Math;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     Button btnOnOff, btnDiscover, btnSend, btnCamera;
     ListView listView;
-    TextView read_msg_box, connectionStatus;
+    TextView read_msg_box, connectionStatus,sensorData, sensorDataGravity, arelative, acceleration_magnitude, acceleration_vertical;
+    TextView time_highest;
     EditText writeMsg;
 
     WifiManager wifiManager;
@@ -54,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
 
     BroadcastReceiver mReceiver;
     IntentFilter mIntentFilter;
+    private double x, y, z;
+    private double threshold =0;
 
     List<WifiP2pDevice> peers=new ArrayList<WifiP2pDevice>();
     String[] deviceNameArray;
@@ -64,6 +72,20 @@ public class MainActivity extends AppCompatActivity {
     Server serverClass;
     Client clientClass;
     SendReceive sendReceive;
+
+    //Usando el sensor de gravedad
+    private SensorManager sensorManager;
+    private Sensor sensor;
+    private long lastUpdate;
+
+
+    //variables para calcular t_highest
+    float[][] a_measured;
+    float[][] a_relative;
+    float[][] a_gravity;
+    static final float g = 9.81f; //constant;
+    float[][] a_vertical;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,7 +196,142 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        //sensor de gravedad
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        lastUpdate = System.currentTimeMillis();
     }
+
+    /*SENSOR LISTENER*/
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            getAccelerometer(event);
+        } else if (event.sensor.getType() == Sensor.TYPE_GRAVITY) {
+            getGravitySensor(event);
+        }
+
+    }
+
+    private void getGravitySensor(SensorEvent event){
+        x = event.values[0];
+        y = event.values[1];
+        z = event.values[2];
+
+        //
+        a_gravity = new float[1][3];
+        a_gravity[0][0] = (float)x;
+        a_gravity[0][1] = (float)y;
+        a_gravity[0][2] = (float)z;
+        //
+
+        x = Math.round(x * 100.0)/100.0;
+        y = Math.round(y * 100.0)/100.0;
+        z = Math.round(z * 100.0)/100.0;
+
+        /*
+        X.setText(x + "");
+        Y.setText(y + "");
+        Z.setText(z + "");
+        */
+        /*
+        if(threshold - z < 0.05 && threshold - z > -0.05){
+            Toast.makeText(this, "Flat Surface", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(this, "Not a Flat Surface", Toast.LENGTH_SHORT).show();
+        }
+        */
+
+        String sensorxyz = "X:" + String.valueOf(x) + ",Y:" + String.valueOf(y) + ",Z:" + String.valueOf(z);
+        sensorDataGravity.setText(sensorxyz);
+    }
+
+    //Computing the time of the highest point
+    private void getAccelerometer(SensorEvent event) {
+        float[] values = event.values;
+        // Movement
+        float x = values[0];
+        float y = values[1];
+        float z = values[2];
+
+        //
+        a_measured = new float[1][3];
+        a_measured[0][0] = x;
+        a_measured[0][1] = y;
+        a_measured[0][2] = z;
+        //
+
+        double accelerationmagnitude = Math.sqrt(x * x + y * y + z * z);
+        acceleration_magnitude.setText("acceleration_magnitude:" + String.valueOf(accelerationmagnitude));
+
+        float accelationSquareRoot = (x * x + y * y + z * z)
+                / (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
+        long actualTime = event.timestamp;
+        /*
+        if (accelationSquareRoot >= 2) //
+        {
+            if (actualTime - lastUpdate < 200) {
+                return;
+            }
+            lastUpdate = actualTime;
+            Toast.makeText(this, "Device was shuffed", Toast.LENGTH_SHORT).show();
+        }
+
+         */
+        String sensorxyz = "X:" + String.valueOf(x) + ",Y:" + String.valueOf(y) + ",Z:" + String.valueOf(z);
+        sensorData.setText(sensorxyz);
+
+
+
+        //
+        /*
+        * When the sensor is at rest, the direction of a measured is towards the center of the Earth and its magnitude is ||ameasured|| = g = 9.81m/s 2
+        * */
+        //
+        if (accelerationmagnitude > 10 && a_gravity!=null) { //10 > 9.81, sensor en movimiento, not rest
+            a_relative = new float[1][3];
+            a_relative[0][0] = a_measured[0][0] - a_gravity[0][0];
+            a_relative[0][1] = a_measured[0][1] - a_gravity[0][1];
+            a_relative[0][2] = a_measured[0][2] - a_gravity[0][2];
+
+            //Calculate a_vertical
+            float numerator = a_relative[0][0]*a_gravity[0][0] + a_relative[0][1]*a_gravity[0][1] + a_relative[0][2]*a_gravity[0][2];
+
+            /*
+            * On an n-dimensional Euclidean space Rn, the intuitive notion of length of the vector x = (x1, x2, ..., xn) is captured by the formula
+            ||x||_2 = sqrt(x1**2 + x2**2 ++ xn**2)
+            */
+            a_vertical = new float[1][3];
+            float denominator = a_gravity[0][0]*a_gravity[0][0] + a_gravity[0][1]*a_gravity[0][1] + a_gravity[0][2] * a_gravity[0][2];
+            a_vertical[0][0] = (-1)*(numerator/denominator)*a_gravity[0][0];
+            a_vertical[0][1] = (-1)*(numerator/denominator)*a_gravity[0][1];
+            a_vertical[0][2] = (-1)*(numerator/denominator)*a_gravity[0][2];
+
+            double v0 = Math.sqrt(Math.pow(a_vertical[0][0], 2) +Math.pow(a_vertical[0][1], 2)  + Math.pow(a_vertical[0][2], 2) );// acceleration_vertical_magnitude
+            acceleration_vertical.setText("vertical velocity (v0):" + String.valueOf(v0));
+
+            float t_highest = (float)v0/g;
+            time_highest.setText("t_highest" + String.valueOf(t_highest));
+            //Time of the highest point
+
+        }
+
+        /*
+        float a_relative, a_measured;
+        float a_gravity; //Vector gravedad: Indica la dirección y magnitud de la gravedad, obtenido del sensor de gravedad
+        float v0 = 0.0f; //velocidad vertical
+        float g = 9.81f; //m/s^2 : constante de gravedad
+        float t_highest = v0/g;
+        */
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+    /*END SENSOR LISTENER*/
 
     private void initialWork() {
         btnOnOff=(Button) findViewById(R.id.onOff);
@@ -185,6 +342,14 @@ public class MainActivity extends AppCompatActivity {
         listView=(ListView) findViewById(R.id.peerListView);
         read_msg_box=(TextView) findViewById(R.id.readMsg);
         connectionStatus=(TextView) findViewById(R.id.connectionStatus);
+        sensorData = (TextView) findViewById(R.id.sensorData);
+        sensorDataGravity = (TextView) findViewById(R.id.sensorDataGravity);
+
+        arelative = (TextView) findViewById(R.id.arelative);
+        acceleration_magnitude = (TextView) findViewById(R.id.acceleration_magnitude);
+        acceleration_vertical = (TextView) findViewById(R.id.acceleration_vertical);
+        time_highest = (TextView) findViewById(R.id.time_highest);
+
         writeMsg=(EditText) findViewById(R.id.writeMsg);
 
         connectionStatus = (TextView)findViewById(R.id.connectionStatus);
@@ -206,50 +371,50 @@ public class MainActivity extends AppCompatActivity {
     WifiP2pManager.PeerListListener peerListListener=new WifiP2pManager.PeerListListener() {
         @Override
         public void onPeersAvailable(WifiP2pDeviceList peerList) {
-            if(!peerList.getDeviceList().equals(peers))
+        if(!peerList.getDeviceList().equals(peers))
+        {
+            peers.clear();
+            peers.addAll(peerList.getDeviceList());
+
+            deviceNameArray=new String[peerList.getDeviceList().size()];
+            deviceArray=new WifiP2pDevice[peerList.getDeviceList().size()];
+            int index=0;
+
+            for(WifiP2pDevice device : peerList.getDeviceList())
             {
-                peers.clear();
-                peers.addAll(peerList.getDeviceList());
-
-                deviceNameArray=new String[peerList.getDeviceList().size()];
-                deviceArray=new WifiP2pDevice[peerList.getDeviceList().size()];
-                int index=0;
-
-                for(WifiP2pDevice device : peerList.getDeviceList())
-                {
-                    deviceNameArray[index]=device.deviceName;
-                    deviceArray[index]=device;
-                    index++;
-                }
-
-                ArrayAdapter<String> adapter=new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_list_item_1,deviceNameArray);
-                listView.setAdapter(adapter);
+                deviceNameArray[index]=device.deviceName;
+                deviceArray[index]=device;
+                index++;
             }
 
-            if(peers.size()==0)
-            {
-                Toast.makeText(getApplicationContext(),"No Device Found",Toast.LENGTH_SHORT).show();
-                return;
-            }
+            ArrayAdapter<String> adapter=new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_list_item_1,deviceNameArray);
+            listView.setAdapter(adapter);
+        }
+
+        if(peers.size()==0)
+        {
+            Toast.makeText(getApplicationContext(),"No Device Found",Toast.LENGTH_SHORT).show();
+            return;
+        }
         }
     };
 
     WifiP2pManager.ConnectionInfoListener connectionInfoListener=new WifiP2pManager.ConnectionInfoListener() {
         @Override
         public void onConnectionInfoAvailable(WifiP2pInfo wifiP2pInfo) {
-            final InetAddress groupOwnerAddress=wifiP2pInfo.groupOwnerAddress;
+        final InetAddress groupOwnerAddress=wifiP2pInfo.groupOwnerAddress;
 
-            if(wifiP2pInfo.groupFormed && wifiP2pInfo.isGroupOwner)
-            {
-                connectionStatus.setText("Host");
-                serverClass=new Server();
-                serverClass.execute();
-            }else if(wifiP2pInfo.groupFormed)
-            {
-                connectionStatus.setText("Client");
-                clientClass=new Client(groupOwnerAddress);
-                clientClass.execute();
-            }
+        if(wifiP2pInfo.groupFormed && wifiP2pInfo.isGroupOwner)
+        {
+            connectionStatus.setText("Host");
+            serverClass=new Server();
+            serverClass.execute();
+        }else if(wifiP2pInfo.groupFormed)
+        {
+            connectionStatus.setText("Client");
+            clientClass=new Client(groupOwnerAddress);
+            clientClass.execute();
+        }
         }
     };
 
@@ -257,31 +422,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         registerReceiver(mReceiver,mIntentFilter);
+        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY), SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         unregisterReceiver(mReceiver);
+        sensorManager.unregisterListener(this);
     }
-
-    /*
-    public class ServerClass extends Thread{
-        Socket socket;
-        ServerSocket serverSocket;
-
-        @Override
-        public void run() {
-            try {
-                serverSocket=new ServerSocket(8888);
-                socket=serverSocket.accept();
-                sendReceive=new SendReceive(socket);
-                sendReceive.start();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }*/
 
     public class Server extends AsyncTask<String, Integer, Boolean> {
         Socket socket;
@@ -394,28 +544,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /*
-    public class ClientClass extends Thread{
-        Socket socket;
-        String hostAdd;
-
-        public  ClientClass(InetAddress hostAddress)
-        {
-            hostAdd=hostAddress.getHostAddress();
-            socket=new Socket();
-        }
-
-        @Override
-        public void run() {
-            try {
-                socket.connect(new InetSocketAddress(hostAdd,8888),500);
-                sendReceive=new SendReceive(socket);
-                sendReceive.start();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }*/
 
     public class Client extends AsyncTask<String, Integer, Boolean> {
         Socket socket;
