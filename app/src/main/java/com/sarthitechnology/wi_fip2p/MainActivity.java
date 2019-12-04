@@ -268,6 +268,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     float[][] a_vertical;
 
 
+    //times to update and send notification to camera
+    long curTime, lasUpdate;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -341,12 +345,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 //
                 if (tempMsg.contains(":")) {
-                    String[] parts = tempMsg.split(":");
-                    float time_to_take_picture = Float.valueOf(parts[1]);
-                    read_msg_box.setText("La foto sera tomada en :"  + parts[1]);
+
                     try {
-                        Log.d("TAKE PICTURE ON:", String.valueOf((long)time_to_take_picture*1000));
-                        Thread.sleep((long)time_to_take_picture*1000);
+                        String[] parts = tempMsg.split(":");
+                        float time_to_take_picture = Float.valueOf(parts[1]);
+                        read_msg_box.setText("La foto sera tomada en :"  + parts[1]);
+                        Log.d("TAKE PICTURE ON:", String.valueOf((long)(time_to_take_picture*1000)));
+                        Thread.sleep((long)(time_to_take_picture*1000));
                         mCamera.takePicture(null, null, mPicture);
                         btnRestartpreview.setVisibility(View.VISIBLE);
                         Toast.makeText(getApplicationContext(), "Foto guardada", Toast.LENGTH_SHORT).show();
@@ -551,27 +556,37 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
 
             //send message to other device to take the picture
-            //String msg = "picture at:"+t_highest;
-            String msg = "capturar";
+            String msg = "picture at:"+t_highest;
+            //String msg = "capturar";
             byte[] bytes =msg.getBytes();
             String userType = connectionStatus.getText().toString();
 
+
+            //only allow one update every 100ms
+            /*
+            if ((curTime - lastUpdate) > 2                                                                                                                                                                           0) {
+                long diffTime = (curTime - lastUpdate);
+                lastUpdate = curTime;
+
+                if (t_highest > 1.3) {
+                    //The predicted time of the highest point t highest is transmitted to the remote camera device
+                    if(userType.equals("Client")) {
+                        clientClass.writeData(bytes);
+                        //serverClass.writeData(bytes);
+                        //return;
+                    }
+                }
+            }
+            */
+
             if (t_highest > 1.3) {
+                /*  The predicted time of the highest point t highest is transmitted to the remote camera device */
                 if(userType.equals("Client")) {
                     clientClass.writeData(bytes);
                     //serverClass.writeData(bytes);
                     //return;
                 }
             }
-
-            /*  The predicted time of the highest point t highest is transmitted to the remote camera device */
-            /*
-            if(userType.equals("Client")) {
-                clientClass.writeData(bytes);
-                //serverClass.writeData(bytes);
-                //return;
-            }
-            */
 
         }
     }
