@@ -1,176 +1,231 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.sarthitechnology.wi_fip2p.MainActivity">
+    android:orientation="vertical">
 
-    <Button
-        android:id="@+id/onOff"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="25dp"
-        android:text="Wifi On" />
 
-    <Button
-        android:id="@+id/discover"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/onOff"
-        android:layout_alignBottom="@+id/onOff"
-        android:layout_centerHorizontal="true"
-        android:text="discover" />
-
-    <Button
-        android:id="@+id/camera"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/onOff"
-        android:layout_alignBottom="@+id/onOff"
-        android:layout_alignParentEnd="true"
-        android:text="Camera" />
-
-    <ListView
-        android:id="@+id/peerListView"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_below="@+id/onOff"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp"
-        android:background="#11F02E" />
-
-    <TextView
-        android:id="@+id/readMsg"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/peerListView"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="10dp"
-        android:text="Message"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        android:textStyle="italic" />
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:paddingRight="10dp">
 
-    <TextView
-        android:id="@+id/sensorDataLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/readMsg"
-        android:text="Sensor DATA ACCELEROMETER: " />
+        <Button
+            android:id="@+id/onOff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:background="@drawable/buttonstyleithgradient"
+            android:layout_margin="3dp"
+            android:text="Wifi On"
+            android:textColor="#fff" />
 
-    <TextView
-        android:id="@+id/sensorData"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/sensorDataLabel"
-        android:text="X,Y,Z " />
+        <Button
+            android:id="@+id/discover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            android:layout_weight="2"
+            android:background="@drawable/buttonstyleithgradient"
+            android:text="Buscar"
+            android:textColor="#fff" />
 
-    <TextView
-        android:id="@+id/sensorDataGravityLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/sensorData"
-        android:text="Sensor DATA GRAVITY: " />
+        <Button
+            android:id="@+id/camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            android:layout_weight="2"
+            android:background="@drawable/buttonstyleithgradient"
+            android:text="Camara"
+            android:textColor="#fff"
+            android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/sensorDataGravity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/sensorDataGravityLabel"
-        android:text="X,Y,Z " />
 
-    <!--
-    <TextView
-        android:id="@+id/arelative"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/sensorDataGravity"
-        android:text="a_relative:" />
-        -->
+        <Button
+            android:id="@+id/restartpreview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            android:layout_weight="2"
+            android:background="@drawable/buttonstylegradientblue"
+            android:text="Tomar otra Foto"
+            android:textColor="#fff"
+            android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/acceleration_magnitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/sensorDataGravity"
-        android:text="acceleration magnitude:" />
-
-    <TextView
-        android:id="@+id/acceleration_vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/acceleration_magnitude"
-        android:text="acceleration vertical:" />
-
-    <TextView
-        android:id="@+id/time_highest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/acceleration_vertical"
-        android:text="t_highest:" />
-
-    <EditText
-        android:id="@+id/writeMsg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:layout_toStartOf="@+id/sendButton" />
-
-    <Button
-        android:id="@+id/sendButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:text="Send" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/connectionStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="5dp"
-        android:text="Connection Status"
+        android:text="Estado de la conexión: Aun no establecido"
         android:textAlignment="center"
         android:textColor="@android:color/holo_blue_dark"
         android:textSize="18sp"
         android:textStyle="italic" />
 
+    <FrameLayout
+        android:id="@+id/camera_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
+    </FrameLayout>
 
-    <!--
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/readMsg"
-        android:layout_marginTop="31dp"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:srcCompat="@mipmap/ic_launcher" />-->
-</RelativeLayout>
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:id="@+id/peersdata">
+
+        <TextView
+            android:id="@+id/labelSelect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:text="Seleccione un dispositivo de la lista: " />
+
+        <ListView
+            android:id="@+id/peerListView"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:background="#11F02E" />
+
+
+        <TextView
+            android:id="@+id/readMsg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Mensaje"
+            android:layout_gravity="center"
+            android:textSize="20sp"
+            android:textStyle="italic" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#000000" />
+
+        <TextView
+            android:id="@+id/labelSelect2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:text="Datos de los sensores" />
+
+        <TextView
+            android:id="@+id/sensorDataLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/readMsg"
+            android:text="Sensor DATA ACCELEROMETER: " />
+
+        <TextView
+            android:id="@+id/sensorData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/sensorDataLabel"
+            android:text="X,Y,Z " />
+
+        <TextView
+            android:id="@+id/sensorDataGravityLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/sensorData"
+            android:text="Sensor DATA GRAVITY: " />
+
+        <TextView
+            android:id="@+id/sensorDataGravity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/sensorDataGravityLabel"
+            android:text="X,Y,Z " />
+
+        <!--
+        <TextView
+            android:id="@+id/arelative"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/sensorDataGravity"
+            android:text="a_relative:" />
+            -->
+
+        <TextView
+            android:id="@+id/acceleration_magnitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="acceleration magnitude:" />
+
+        <TextView
+            android:id="@+id/acceleration_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="acceleration vertical:" />
+
+        <TextView
+            android:id="@+id/max_v0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Max (v0):" />
+
+        <TextView
+            android:id="@+id/time_highest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="t_highest:" />
+
+        <TextView
+            android:id="@+id/max_time_highest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Max (t_highest):" />
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/writeMsg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:layout_weight="6"
+                android:visibility="visible"
+                android:inputType="textPersonName" />
+
+            <Button
+                android:id="@+id/sendButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:visibility="visible"
+                android:text="Enviar" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>

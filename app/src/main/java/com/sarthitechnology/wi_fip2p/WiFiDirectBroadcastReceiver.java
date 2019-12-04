@@ -7,9 +7,6 @@ import android.net.NetworkInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.widget.Toast;
 
-/**
- * Created by lenovo on 21-02-2018.
- */
 
 public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
     private WifiP2pManager mManager;
@@ -54,7 +51,7 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
             {
                 mManager.requestConnectionInfo(mChannel,mActivity.connectionInfoListener);
             }else {
-                mActivity.connectionStatus.setText("Device Disconnected");
+                mActivity.connectionStatus.setText("Dispositivo desconectado");
             }
         }else if(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)){
             //do something
