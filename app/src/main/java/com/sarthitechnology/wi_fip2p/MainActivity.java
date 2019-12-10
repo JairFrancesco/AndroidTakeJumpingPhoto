@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -34,6 +36,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -63,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Camera mCamera;
     private MainActivity.CameraPreview mPreview;
 
+    //Callback of takepicture method
     private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
 
         @Override
@@ -79,6 +83,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 fos.write(data);
                 fos.close();
                 Toast.makeText(getApplicationContext(),"Foto tomada",Toast.LENGTH_SHORT).show();
+
+                if(pictureFile.exists()){ //Show preview image of photo taken
+                    Log.d("image", "Picturefile exists");
+                    Bitmap myBitmap = BitmapFactory.decodeFile(pictureFile.getAbsolutePath());
+                    ImageView myImage = findViewById(R.id.imageViewResult);
+                    myImage.setImageBitmap(myBitmap);
+
+                } else {
+                    Log.d("image", "Picturefile NOT exists");
+                }
             } catch (FileNotFoundException e) {
                 Log.d(TAG, "File not found: " + e.getMessage());
                 Toast.makeText(getApplicationContext(),"Archivo no encontrado",Toast.LENGTH_SHORT).show();
@@ -234,6 +248,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     TextView max_v0, min_v0;
     TextView max_time_highest;
     EditText writeMsg;
+    LinearLayout layout_camera;
 
     Button btnRestartpreview;
 
@@ -385,9 +400,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             {
                 wifiManager.setWifiEnabled(false);
                 btnOnOff.setText("ON");
-                preview.setVisibility(View.GONE);
+                layout_camera.setVisibility(View.GONE);
                 peersdata.setVisibility(View.VISIBLE);
-                btnRestartpreview.setVisibility(View.GONE);
+                btnRestartpreview.setVisibility(View.INVISIBLE);
             }else {
                 wifiManager.setWifiEnabled(true);
                 btnOnOff.setText("OFF");
@@ -399,7 +414,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         btnRestartpreview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                btnRestartpreview.setVisibility(View.GONE);
+                btnRestartpreview.setVisibility(View.INVISIBLE);
                 mCamera.startPreview();
             }
         });
@@ -624,6 +639,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         acceleration_vertical = (TextView) findViewById(R.id.acceleration_vertical);
         time_highest = (TextView) findViewById(R.id.time_highest);
 
+        layout_camera = findViewById(R.id.layout_camera);
+
         writeMsg=(EditText) findViewById(R.id.writeMsg);
 
         connectionStatus = (TextView)findViewById(R.id.connectionStatus);
@@ -683,7 +700,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 serverClass=new Server();
                 serverClass.execute();
 
-                preview.setVisibility(View.VISIBLE);
+                layout_camera.setVisibility(View.VISIBLE);
                 peersdata.setVisibility(View.GONE);
 
             }else if(wifiP2pInfo.groupFormed)
@@ -695,7 +712,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
             } else {
-                preview.setVisibility(View.GONE);
+                layout_camera.setVisibility(View.GONE);
                 peersdata.setVisibility(View.VISIBLE);
             }
         }
@@ -727,6 +744,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             boolean result = true;
             try {
                 serverSocket = new ServerSocket(8888);
+                serverSocket.setReuseAddress(true);
                 socket = serverSocket.accept();
             } catch (IOException e) {
                 result = false;
