@@ -1,4 +1,4 @@
-package com.sarthitechnology.wi_fip2p;
+package com.mobile_devices.p2pjumpcamera;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.sarthitechnology.wi_fip2p", appContext.getPackageName());
+        assertEquals("com.sarthitechnology.p2pjumpcamera", appContext.getPackageName());
     }
 }

@@ -1,4 +1,4 @@
-package com.sarthitechnology.wi_fip2p;
+package com.mobile_devices.p2pjumpcamera;
 
 import org.junit.Test;
 

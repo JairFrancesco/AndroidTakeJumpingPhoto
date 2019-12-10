@@ -1,4 +1,4 @@
-package com.sarthitechnology.wi_fip2p;
+package com.mobile_devices.p2pjumpcamera;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -23,7 +23,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static android.content.ContentValues.TAG;
-import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
 
 public class CameraActivity extends AppCompatActivity {
     private Camera mCamera;

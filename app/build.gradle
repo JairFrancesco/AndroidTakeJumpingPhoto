@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     buildToolsVersion "27.0.3"
     defaultConfig {
-        applicationId "com.sarthitechnology.wi_fip2p"
+        applicationId "com.mobile_devices.p2pjumpcamera"
         minSdkVersion 19
         targetSdkVersion 26
         versionCode 1
@@ -26,5 +26,8 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:support-compat:26.0.0'
     testCompile 'junit:junit:4.12'
+
+
 }

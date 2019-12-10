@@ -1,5 +1,6 @@
-package com.sarthitechnology.wi_fip2p;
+package com.mobile_devices.p2pjumpcamera;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,11 +27,10 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.webkit.PermissionRequest;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -41,6 +41,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import android.support.v4.app.ActivityCompat;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -292,32 +295,76 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initialWork();
+        exqListener();
+
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+
+        /* REQUEST PERMISSIONS */
+
+        // The request code used in ActivityCompat.requestPermissions()
+        // and returned in the Activity's onRequestPermissionsResult()
+        int PERMISSION_ALL = 1;
+        String[] PERMISSIONS = {
+                android.Manifest.permission.ACCESS_WIFI_STATE,
+                android.Manifest.permission.CHANGE_WIFI_STATE,
+                android.Manifest.permission.CHANGE_NETWORK_STATE,
+                android.Manifest.permission.INTERNET,
+                android.Manifest.permission.ACCESS_NETWORK_STATE,
+                android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                android.Manifest.permission.ACCESS_FINE_LOCATION,
+                android.Manifest.permission.CAMERA,
+                android.Manifest.permission.RECORD_AUDIO
+        };
+
+        if (!hasPermissions(this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        } else {
+            /*CAMERA*/
+
+            try {
+                // Create an instance of Camera
+                mCamera = getCameraInstance();
+                // Create our Preview view and set it as the content of our activity.
+                mPreview = new MainActivity.CameraPreview(this, mCamera);
+                preview = (FrameLayout) findViewById(R.id.camera_preview);
+                preview.addView(mPreview);
+
+                mCamera.setDisplayOrientation(90);
+            } catch (Exception ex) {
+                Toast.makeText(getApplicationContext(), "No se pudo acceder a la camara, porfavor conceda los permisos", Toast.LENGTH_SHORT).show();
+            }
+
+            /*END CAMERA*/
+        }
+
+        /* REQUEST PERMISSIONS END*/
+
+
+
+
+
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(
+            int requestCode,
+            String[] permissions,
+            int[] grantResults
+    )
+    {
         /*CAMERA*/
 
         try {
             // Create an instance of Camera
             mCamera = getCameraInstance();
-
             // Create our Preview view and set it as the content of our activity.
             mPreview = new MainActivity.CameraPreview(this, mCamera);
             preview = (FrameLayout) findViewById(R.id.camera_preview);
             preview.addView(mPreview);
-
-            peersdata = (LinearLayout) findViewById(R.id.peersdata);
-
-            // Add a listener to the Capture button
-            /*
-            Button captureButton = (Button) findViewById(R.id.button_capture);
-            captureButton.setOnClickListener(
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            // get an image from the camera
-                            mCamera.takePicture(null, null, mPicture);
-                        }
-                    }
-            );
-            */
 
             mCamera.setDisplayOrientation(90);
         } catch (Exception ex) {
@@ -325,15 +372,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
 
         /*END CAMERA*/
-
-        initialWork();
-        exqListener();
-
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
-
-
     }
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 
     Handler handler=new Handler(new Handler.Callback() {
         @Override
@@ -656,6 +707,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+
+        peersdata = findViewById(R.id.peersdata);
     }
 
     WifiP2pManager.PeerListListener peerListListener=new WifiP2pManager.PeerListListener() {
