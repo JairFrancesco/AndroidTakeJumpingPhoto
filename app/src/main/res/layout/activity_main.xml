@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -44,18 +45,6 @@
             android:textColor="#fff"
             android:visibility="gone" />
 
-
-        <Button
-            android:id="@+id/restartpreview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dp"
-            android:layout_weight="2"
-            android:background="@drawable/buttonstylegradientblue"
-            android:text="Tomar otra Foto"
-            android:textColor="#fff"
-            android:visibility="gone" />
-
     </LinearLayout>
 
     <TextView
@@ -68,29 +57,70 @@
         android:textSize="18sp"
         android:textStyle="italic" />
 
-    <FrameLayout
-        android:id="@+id/camera_preview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-
-    </FrameLayout>
 
     <LinearLayout
+        android:id="@+id/layout_camera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <FrameLayout
+            android:id="@+id/camera_preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="9"
+            android:visibility="visible">
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_camera_options"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <Button
+                android:id="@+id/restartpreview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:layout_weight="7"
+                android:background="@drawable/buttonstylegradientblue"
+                android:text="Tomar otra Foto"
+                android:textColor="#fff"
+                android:visibility="invisible" />
+
+            <ImageView
+                android:id="@+id/imageViewResult"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                app:srcCompat="@android:color/black" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+
+    <LinearLayout
+        android:id="@+id/peersdata"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="visible"
-        android:id="@+id/peersdata">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/labelSelect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:text="Seleccione un dispositivo de la lista: "
             android:textSize="18dp"
-            android:textStyle="bold"
-            android:text="Seleccione un dispositivo de la lista: " />
+            android:textStyle="bold" />
 
         <ListView
             android:id="@+id/peerListView"
@@ -103,9 +133,9 @@
             android:id="@+id/readMsg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:text="Mensaje"
-            android:layout_gravity="center"
             android:textSize="20sp"
             android:textStyle="italic" />
 
@@ -119,44 +149,44 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:text="Datos de los sensores"
             android:textSize="18dp"
-            android:textStyle="bold"
-            android:text="Datos de los sensores" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/sensorDataLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true"
             android:layout_below="@+id/readMsg"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
             android:text="Sensor DATA ACCELEROMETER: " />
 
         <TextView
             android:id="@+id/sensorData"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true"
             android:layout_below="@+id/sensorDataLabel"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
             android:text="X,Y,Z " />
 
         <TextView
             android:id="@+id/sensorDataGravityLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true"
             android:layout_below="@+id/sensorData"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
             android:text="Sensor DATA GRAVITY: " />
 
         <TextView
             android:id="@+id/sensorDataGravity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true"
             android:layout_below="@+id/sensorDataGravityLabel"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
             android:text="X,Y,Z " />
 
         <!--
@@ -189,6 +219,12 @@
             android:text="Max (v0):" />
 
         <TextView
+            android:id="@+id/min_v0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Min (v0):" />
+
+        <TextView
             android:id="@+id/time_highest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -201,31 +237,38 @@
             android:text="Max (t_highest):" />
 
 
+        <TextView
+            android:id="@+id/take_picture_at"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Take picture at:" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <EditText
                 android:id="@+id/writeMsg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="10"
                 android:layout_weight="6"
-                android:visibility="visible"
-                android:inputType="textPersonName" />
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/sendButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:visibility="visible"
-                android:text="Enviar" />
+                android:text="Enviar"
+                android:visibility="visible" />
         </LinearLayout>
 
 
     </LinearLayout>
+
 
 </LinearLayout>

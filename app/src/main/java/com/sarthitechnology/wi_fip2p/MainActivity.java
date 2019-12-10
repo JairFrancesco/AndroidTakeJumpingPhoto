@@ -230,8 +230,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     Button btnOnOff, btnDiscover, btnSend, btnCamera;
     ListView listView;
     TextView read_msg_box, connectionStatus,sensorData, sensorDataGravity, arelative, acceleration_magnitude, acceleration_vertical;
-    TextView time_highest;
-    TextView max_v0;
+    TextView time_highest, take_picture_at;
+    TextView max_v0, min_v0;
     TextView max_time_highest;
     EditText writeMsg;
 
@@ -257,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Sensor sensor;
     private long lastUpdate;
     double x,y,z;
-    float maximumv0 = 9.8f;
+    float maximumv0 = 9.8f, minimumv0 = 10;
     float maximum_thighest = 0.2f;
 
     //variables para calcular t_highest
@@ -352,10 +352,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         read_msg_box.setText("La foto sera tomada en :"  + parts[1]);
                         Log.d("TAKE PICTURE ON:", String.valueOf((long)(time_to_take_picture*1000)));
                         Thread.sleep((long)(time_to_take_picture*1000));
-                        mCamera.takePicture(null, null, mPicture);
+                        mCamera.stopPreview();
                         btnRestartpreview.setVisibility(View.VISIBLE);
+                        mCamera.takePicture(null, null, mPicture);
                         Toast.makeText(getApplicationContext(), "Foto guardada", Toast.LENGTH_SHORT).show();
                         read_msg_box.setText("Foto tomada");
+
                     } catch(Exception e) {
                         e.printStackTrace();
                         // Process exception
@@ -546,6 +548,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
 
 
+            if (v0 < minimumv0) {
+                minimumv0 = (float) v0;
+                min_v0.setText("Min (v0):"+String.valueOf(minimumv0));
+            }
+
             float t_highest = (float)v0/g;
             time_highest.setText("t_highest: " + String.valueOf(t_highest));
             //Time of the highest point
@@ -561,32 +568,28 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             byte[] bytes =msg.getBytes();
             String userType = connectionStatus.getText().toString();
 
-
-            //only allow one update every 100ms
-            /*
-            if ((curTime - lastUpdate) > 2                                                                                                                                                                           0) {
-                long diffTime = (curTime - lastUpdate);
+            //only allow one update every 20ms
+            curTime = System.currentTimeMillis();
+            long diffTime = curTime - lastUpdate;
+            if (t_highest > 1.4 && diffTime > 100) { //update every 50 ms
                 lastUpdate = curTime;
-
-                if (t_highest > 1.3) {
-                    //The predicted time of the highest point t highest is transmitted to the remote camera device
-                    if(userType.equals("Client")) {
-                        clientClass.writeData(bytes);
-                        //serverClass.writeData(bytes);
-                        //return;
-                    }
-                }
-            }
-            */
-
-            if (t_highest > 1.3) {
-                /*  The predicted time of the highest point t highest is transmitted to the remote camera device */
+                // The predicted time of the highest point t highest is transmitted to the remote camera device
                 if(userType.equals("Client")) {
                     clientClass.writeData(bytes);
                     //serverClass.writeData(bytes);
                     //return;
                 }
             }
+
+            /*
+            if (t_highest > 1.3) {
+                // The predicted time of the highest point t highest is transmitted to the remote camera device
+                if(userType.equals("Client")) {
+                    clientClass.writeData(bytes);
+                    //serverClass.writeData(bytes);
+                    //return;
+                }
+            }*/
 
         }
     }
@@ -612,7 +615,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         sensorData = (TextView) findViewById(R.id.sensorData);
         sensorDataGravity = (TextView) findViewById(R.id.sensorDataGravity);
         max_v0 = findViewById(R.id.max_v0);
+        min_v0 = findViewById(R.id.min_v0);
         max_time_highest = findViewById(R.id.max_time_highest);
+        take_picture_at = findViewById(R.id.take_picture_at);
 
         //arelative = (TextView) findViewById(R.id.arelative);
         acceleration_magnitude = (TextView) findViewById(R.id.acceleration_magnitude);
